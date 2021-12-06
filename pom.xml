@@ -15,6 +15,7 @@
     <description>SmokeAndGasAlarmSystem</description>
     <properties>
         <java.version>1.8</java.version>
+        <springdoc.openapi.version>1.5.2</springdoc.openapi.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
     </properties>
     <dependencies>
@@ -46,7 +47,26 @@
             <artifactId>spring-integration-jmx</artifactId>
             <version>5.5.6</version>
         </dependency>
-
+        <!--DB processing-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--Swagger-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc.openapi.version}</version>
+        </dependency>
         <!--Lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>

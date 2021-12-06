@@ -1,34 +1,27 @@
 package ru.mirea.smokeandgasalarmsystem.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import org.decimal4j.util.DoubleRounder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.mirea.smokeandgasalarmsystem.model.*;
 import ru.mirea.smokeandgasalarmsystem.config.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
+import ru.mirea.smokeandgasalarmsystem.model.entity.dao.AlarmInfoDao;
 
 import static ru.mirea.smokeandgasalarmsystem.config.AppConstants.*;
 
-@Component
-public class MessagePackerService {
+import java.util.*;
 
-    private static final Logger logger = LoggerFactory.getLogger(MessagePackerService.class);
+@Component
+public class MessageHandlerComponent {
+
+    private static final Logger logger = LoggerFactory.getLogger(MessageHandlerComponent.class);
 
     @Autowired
     MqttGateway mqttGateway;
+
+    @Autowired
+    private AlarmInfoDao alarmInfoDao;
 
     private List<Message> data = new ArrayList<>();
 
@@ -38,6 +31,13 @@ public class MessagePackerService {
         messageMap.put(topic, message);
     }
 
+    public static void handleIncomingData(String topic, String message) {
+        if (topic.equals(TOPIC_SMOKE_SENSOR)) {
+
+        } else if (topic.equals(TOPIC_GAS_SENSOR)) {
+
+        }
+    }
 
 
 

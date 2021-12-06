@@ -13,9 +13,13 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import ru.mirea.smokeandgasalarmsystem.service.MessageHandlerComponent;
+
+import java.util.Objects;
 
 import static ru.mirea.smokeandgasalarmsystem.config.AppConstants.*;
 
@@ -78,7 +82,8 @@ public class MqttBeans {
         adapter.setQos(2);
         //adapter.setOutputChannel(mqttInputChannel());
         return IntegrationFlows.from(adapter)
-                .handle(message -> System.out.println(message.getPayload()))
+                //.handle(message -> System.out.println(message.getPayload()))
+                .handle(message -> MessageHandlerComponent.handleIncomingData(Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString(), (String) message.getPayload()))
                 .get();
     }
 
