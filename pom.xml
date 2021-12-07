@@ -35,7 +35,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!--Spring integration-->
         <dependency>
             <groupId>org.springframework.integration</groupId>
@@ -73,14 +72,12 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-
         <!--Decimal handling-->
         <dependency>
             <groupId>org.decimal4j</groupId>
             <artifactId>decimal4j</artifactId>
             <version>1.0.3</version>
         </dependency>
-
         <!--Mapstruct-->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -92,13 +89,6 @@
             <artifactId>mapstruct-processor</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-            <version>2.11.1</version>
-        </dependency>
-
     </dependencies>
 
     <build>
