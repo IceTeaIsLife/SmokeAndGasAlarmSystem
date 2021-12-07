@@ -1,19 +1,16 @@
-package ru.mirea.smokeandgasalarmsystem;
+package ru.mirea.smokeandgasalarmsystem.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.smokeandgasalarmsystem.exception.AlarmInfoNotFoundException;
 import ru.mirea.smokeandgasalarmsystem.model.AppResponse;
 import ru.mirea.smokeandgasalarmsystem.model.domain.AlarmInfo;
-import ru.mirea.smokeandgasalarmsystem.service.AlarmDevice;
+import ru.mirea.smokeandgasalarmsystem.service.devices.AlarmDevice;
 
-import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController

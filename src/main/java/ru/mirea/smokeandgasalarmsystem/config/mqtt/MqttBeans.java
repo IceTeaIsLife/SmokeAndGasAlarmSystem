@@ -1,4 +1,4 @@
-package ru.mirea.smokeandgasalarmsystem.config;
+package ru.mirea.smokeandgasalarmsystem.config.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.context.annotation.Bean;
@@ -41,48 +41,15 @@ public class MqttBeans {
         return factory;
     }
 
-    /*@Bean
-    public MessageChannel mqttInputChannel() {
-        return new DirectChannel();
-    }
-
-    @Bean
-    public MessageProducer inbound() {
-        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("serverIn",
-                mqttClientFactory(), TOPIC_HUMIDITY, TOPIC_TEMPERATURE);
-
-        //adapter.addTopic(TOPIC_HUMIDITY);
-        adapter.setCompletionTimeout(5000);
-        adapter.setConverter(new DefaultPahoMessageConverter());
-        adapter.setQos(2);
-        adapter.setOutputChannel(mqttInputChannel());
-        return adapter;
-    }
-
-    @Bean
-    @ServiceActivator(inputChannel = "mqttInputChannel")
-    public MessageHandler handler() {
-        return message -> {
-            String topic = Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString();
-            //if (Arrays.asList(TOPIC_NAMES).contains(topic)) {
-            System.out.println((String) message.getPayload());
-                //MessagePackerService.putMessageToMap(topic, (String) message.getPayload());
-            //}
-        };
-    }*/
-
     @Bean
     public IntegrationFlow mqttInbound() {
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("serverIn",
                 mqttClientFactory(), TOPIC_GAS_SENSOR, TOPIC_SMOKE_SENSOR, TOPIC_ALARM);
 
-        //adapter.addTopic(TOPIC_HUMIDITY);
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(2);
-        //adapter.setOutputChannel(mqttInputChannel());
         return IntegrationFlows.from(adapter)
-                //.handle(message -> System.out.println(message.getPayload()))
                 .handle(message -> MessageHandlerComponent.putMessageToMap(Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString(), (String) message.getPayload()))
                 .get();
     }

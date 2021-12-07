@@ -7,10 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.mirea.smokeandgasalarmsystem.config.MqttGateway;
-import ru.mirea.smokeandgasalarmsystem.model.GasData;
-import ru.mirea.smokeandgasalarmsystem.model.SensorStatusEnum;
-import ru.mirea.smokeandgasalarmsystem.model.SmokeData;
+import ru.mirea.smokeandgasalarmsystem.config.mqtt.MqttGateway;
+import ru.mirea.smokeandgasalarmsystem.model.domain.GasData;
+import ru.mirea.smokeandgasalarmsystem.model.domain.SensorStatusEnum;
+import ru.mirea.smokeandgasalarmsystem.model.domain.SmokeData;
+import ru.mirea.smokeandgasalarmsystem.service.devices.AlarmDevice;
 
 import java.util.HashMap;
 import java.util.Map;

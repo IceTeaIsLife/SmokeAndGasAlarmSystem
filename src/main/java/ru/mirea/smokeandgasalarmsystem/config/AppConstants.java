@@ -13,6 +13,4 @@ public class AppConstants {
     public static final String OK = "OK";
     public static final String RESOLVE_STATUS_NO = "NOT RESOLVED";
     public static final String RESOLVE_STATUS_OK = "RESOLVED";
-
-    public static final int DEVICE_ID = 21;
 }

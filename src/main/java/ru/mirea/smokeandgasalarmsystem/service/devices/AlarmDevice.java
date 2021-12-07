@@ -1,4 +1,4 @@
-package ru.mirea.smokeandgasalarmsystem.service;
+package ru.mirea.smokeandgasalarmsystem.service.devices;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,11 +1,10 @@
-package ru.mirea.smokeandgasalarmsystem.config;
+package ru.mirea.smokeandgasalarmsystem.config.mqtt;
 
 import org.springframework.integration.annotation.Gateway;
 import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 
-//@MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
 @MessagingGateway
 public interface MqttGateway {
     @Gateway(requestChannel = "mqttOutboundChannel")
