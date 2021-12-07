@@ -13,3 +13,8 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+  packages-to-scan: ru.mirea
+  paths-to-match: /api/**

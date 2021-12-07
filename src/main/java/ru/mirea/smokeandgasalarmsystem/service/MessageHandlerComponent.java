@@ -1,16 +1,22 @@
 package ru.mirea.smokeandgasalarmsystem.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.mirea.smokeandgasalarmsystem.model.*;
-import ru.mirea.smokeandgasalarmsystem.config.*;
-import ru.mirea.smokeandgasalarmsystem.model.entity.dao.AlarmInfoDao;
+import ru.mirea.smokeandgasalarmsystem.config.MqttGateway;
+import ru.mirea.smokeandgasalarmsystem.model.GasData;
+import ru.mirea.smokeandgasalarmsystem.model.SensorStatusEnum;
+import ru.mirea.smokeandgasalarmsystem.model.SmokeData;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static ru.mirea.smokeandgasalarmsystem.config.AppConstants.*;
-
-import java.util.*;
 
 @Component
 public class MessageHandlerComponent {
@@ -21,9 +27,7 @@ public class MessageHandlerComponent {
     MqttGateway mqttGateway;
 
     @Autowired
-    private AlarmInfoDao alarmInfoDao;
-
-    private List<Message> data = new ArrayList<>();
+    private AlarmDevice alarmDevice;
 
     protected static Map<String, String> messageMap = new HashMap<>();
 
@@ -31,14 +35,46 @@ public class MessageHandlerComponent {
         messageMap.put(topic, message);
     }
 
-    public static void handleIncomingData(String topic, String message) {
-        if (topic.equals(TOPIC_SMOKE_SENSOR)) {
-
-        } else if (topic.equals(TOPIC_GAS_SENSOR)) {
-
+    @Scheduled(initialDelay = 5, fixedDelay = 1, timeUnit = TimeUnit.SECONDS)
+    public void handleIncomingData() {
+        handleSmokeSensorData(messageMap.get(TOPIC_SMOKE_SENSOR));
+        handleGasSensorData(messageMap.get(TOPIC_GAS_SENSOR));
+        if (messageMap.get(TOPIC_ALARM) != null) {
+            handleAlarmData(messageMap.get(TOPIC_ALARM));
         }
     }
 
+    public void handleSmokeSensorData(String message) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            SmokeData smokeData = objectMapper.readValue(message, SmokeData.class);
+            if ((smokeData.getTemperature() > 70) || smokeData.getStatus().equals(SensorStatusEnum.CRITICAL)) {
+                mqttGateway.sendToMqttBroker(SMOKE_ALARM, TOPIC_ALARM);
+            } else {
+                mqttGateway.sendToMqttBroker(OK, TOPIC_ALARM);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void handleGasSensorData(String message) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            GasData gasData = objectMapper.readValue(message, GasData.class);
+            if (gasData.getStatus().equals(SensorStatusEnum.CRITICAL)) {
+                mqttGateway.sendToMqttBroker(GAS_ALARM, TOPIC_ALARM);
+            } else {
+                mqttGateway.sendToMqttBroker(OK, TOPIC_ALARM);
+            }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void handleAlarmData(String message) {
+        if (message.equals(GAS_ALARM) || message.equals(SMOKE_ALARM)) {
+            alarmDevice.enableAlarm(message);
+        }
+    }
 }

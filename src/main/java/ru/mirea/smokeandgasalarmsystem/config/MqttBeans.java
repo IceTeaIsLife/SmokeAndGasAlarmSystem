@@ -74,7 +74,7 @@ public class MqttBeans {
     @Bean
     public IntegrationFlow mqttInbound() {
         MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("serverIn",
-                mqttClientFactory(), TOPIC_GAS_SENSOR, TOPIC_SMOKE_SENSOR);
+                mqttClientFactory(), TOPIC_GAS_SENSOR, TOPIC_SMOKE_SENSOR, TOPIC_ALARM);
 
         //adapter.addTopic(TOPIC_HUMIDITY);
         adapter.setCompletionTimeout(5000);
@@ -83,7 +83,7 @@ public class MqttBeans {
         //adapter.setOutputChannel(mqttInputChannel());
         return IntegrationFlows.from(adapter)
                 //.handle(message -> System.out.println(message.getPayload()))
-                .handle(message -> MessageHandlerComponent.handleIncomingData(Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString(), (String) message.getPayload()))
+                .handle(message -> MessageHandlerComponent.putMessageToMap(Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString(), (String) message.getPayload()))
                 .get();
     }
 
