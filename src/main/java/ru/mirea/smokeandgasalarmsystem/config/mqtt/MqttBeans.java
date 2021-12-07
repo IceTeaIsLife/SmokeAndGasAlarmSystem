@@ -1,6 +1,7 @@
 package ru.mirea.smokeandgasalarmsystem.config.mqtt;
 
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -13,13 +14,10 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
-import org.springframework.integration.mqtt.support.MqttHeaders;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import ru.mirea.smokeandgasalarmsystem.service.MessageHandlerComponent;
-
-import java.util.Objects;
 
 import static ru.mirea.smokeandgasalarmsystem.config.AppConstants.*;
 
@@ -27,6 +25,9 @@ import static ru.mirea.smokeandgasalarmsystem.config.AppConstants.*;
 @EnableScheduling
 @EnableIntegration
 public class MqttBeans {
+    @Autowired
+    private MessageHandlerComponent messageHandlerComponent;
+
     @Bean
     public MqttPahoClientFactory mqttClientFactory() {
         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
@@ -42,15 +43,41 @@ public class MqttBeans {
     }
 
     @Bean
-    public IntegrationFlow mqttInbound() {
-        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("serverIn",
-                mqttClientFactory(), TOPIC_GAS_SENSOR, TOPIC_SMOKE_SENSOR, TOPIC_ALARM);
+    public IntegrationFlow mqttInboundSmoke() {
+        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("smokeIn",
+                mqttClientFactory(), TOPIC_SMOKE_SENSOR);
 
         adapter.setCompletionTimeout(5000);
         adapter.setConverter(new DefaultPahoMessageConverter());
         adapter.setQos(2);
         return IntegrationFlows.from(adapter)
-                .handle(message -> MessageHandlerComponent.putMessageToMap(Objects.requireNonNull(message.getHeaders().get(MqttHeaders.RECEIVED_TOPIC)).toString(), (String) message.getPayload()))
+                .handle(message -> messageHandlerComponent.handleSmokeSensorData((String) message.getPayload()))
+                .get();
+    }
+
+    @Bean
+    public IntegrationFlow mqttInboundGas() {
+        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("gasIn",
+                mqttClientFactory(), TOPIC_GAS_SENSOR);
+
+        adapter.setCompletionTimeout(5000);
+        adapter.setConverter(new DefaultPahoMessageConverter());
+        adapter.setQos(2);
+        return IntegrationFlows.from(adapter)
+                .handle(message -> messageHandlerComponent.handleGasSensorData((String) message.getPayload()))
+                .get();
+    }
+
+    @Bean
+    public IntegrationFlow mqttInboundAlarm() {
+        MqttPahoMessageDrivenChannelAdapter adapter = new MqttPahoMessageDrivenChannelAdapter("alarmIn",
+                mqttClientFactory(), TOPIC_ALARM);
+
+        adapter.setCompletionTimeout(5000);
+        adapter.setConverter(new DefaultPahoMessageConverter());
+        adapter.setQos(2);
+        return IntegrationFlows.from(adapter)
+                .handle(message -> messageHandlerComponent.handleAlarmData((String) message.getPayload()))
                 .get();
     }
 

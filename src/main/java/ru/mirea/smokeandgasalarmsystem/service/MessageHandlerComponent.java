@@ -5,17 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.mirea.smokeandgasalarmsystem.config.mqtt.MqttGateway;
 import ru.mirea.smokeandgasalarmsystem.model.domain.GasData;
 import ru.mirea.smokeandgasalarmsystem.model.domain.SensorStatusEnum;
 import ru.mirea.smokeandgasalarmsystem.model.domain.SmokeData;
 import ru.mirea.smokeandgasalarmsystem.service.devices.AlarmDevice;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static ru.mirea.smokeandgasalarmsystem.config.AppConstants.*;
 
@@ -29,21 +24,6 @@ public class MessageHandlerComponent {
 
     @Autowired
     private AlarmDevice alarmDevice;
-
-    protected static Map<String, String> messageMap = new HashMap<>();
-
-    public static void putMessageToMap(String topic, String message) {
-        messageMap.put(topic, message);
-    }
-
-    @Scheduled(initialDelay = 5, fixedDelay = 1, timeUnit = TimeUnit.SECONDS)
-    public void handleIncomingData() {
-        handleSmokeSensorData(messageMap.get(TOPIC_SMOKE_SENSOR));
-        handleGasSensorData(messageMap.get(TOPIC_GAS_SENSOR));
-        if (messageMap.get(TOPIC_ALARM) != null) {
-            handleAlarmData(messageMap.get(TOPIC_ALARM));
-        }
-    }
 
     public void handleSmokeSensorData(String message) {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -74,8 +54,11 @@ public class MessageHandlerComponent {
     }
 
     public void handleAlarmData(String message) {
-        if (message.equals(GAS_ALARM) || message.equals(SMOKE_ALARM)) {
-            alarmDevice.enableAlarm(message);
+        if (message.equals(GAS_ALARM)) {
+            alarmDevice.enableGasAlarm(message);
+        }
+        else if (message.equals(SMOKE_ALARM)) {
+            alarmDevice.enableSmokeAlarm(message);
         }
     }
 }

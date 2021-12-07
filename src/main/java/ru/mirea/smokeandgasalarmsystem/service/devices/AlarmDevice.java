@@ -21,16 +21,22 @@ public class AlarmDevice {
     @Autowired
     private AlarmInfoDao alarmInfoDao;
 
-    public void enableAlarm(String message) {
-        String deviceTopic = null;
-        if (message.equals(GAS_ALARM)) {
-            deviceTopic = TOPIC_GAS_SENSOR;
-        } else if (message.equals(SMOKE_ALARM)) {
-            deviceTopic = TOPIC_SMOKE_SENSOR;
-        }
+    public void enableGasAlarm(String message) {
         AlarmInfo alarmInfo = AlarmInfo.builder()
                 .id(0L)
-                .device(deviceTopic)
+                .device(TOPIC_GAS_SENSOR)
+                .description(message)
+                .resolveStatus(RESOLVE_STATUS_NO)
+                .timestamp(Date.from(Instant.now()))
+                .build();
+        AlarmInfoEntity alarmInfoEntity = AlarmInfoMapper.ALARM_INFO_MAPPER.domainToEntity(alarmInfo);
+        alarmInfoDao.save(alarmInfoEntity);
+    }
+
+    public void enableSmokeAlarm(String message) {
+        AlarmInfo alarmInfo = AlarmInfo.builder()
+                .id(0L)
+                .device(TOPIC_SMOKE_SENSOR)
                 .description(message)
                 .resolveStatus(RESOLVE_STATUS_NO)
                 .timestamp(Date.from(Instant.now()))
