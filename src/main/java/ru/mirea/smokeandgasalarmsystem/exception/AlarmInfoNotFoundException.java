@@ -9,3 +9,4 @@ public class AlarmInfoNotFoundException extends Exception {
         super("Alarms not found!", e);
     }
 }
+

@@ -7,3 +7,4 @@ import ru.mirea.smokeandgasalarmsystem.model.entity.AlarmInfoEntity;
 @Repository
 public interface AlarmInfoDao extends JpaRepository<AlarmInfoEntity, Long> {
 }
+

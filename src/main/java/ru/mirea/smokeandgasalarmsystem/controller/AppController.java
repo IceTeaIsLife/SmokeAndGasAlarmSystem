@@ -15,8 +15,8 @@ import java.util.List;
 
 @RestController
 @CrossOrigin
-@RequestMapping("api/personal-loyalty")
-@Tag(name = "Personal Loyalty System Controller")
+@RequestMapping("api/smoke-and-gas-alarm")
+@Tag(name = "Controller for smoke and gas alarm system")
 public class AppController {
 
     private final AlarmDevice alarmDevice;
@@ -45,5 +45,4 @@ public class AppController {
             return new ResponseEntity<>(AppResponse.error(e.getMessage(), null), HttpStatus.NOT_FOUND);
         }
     }
-
 }
