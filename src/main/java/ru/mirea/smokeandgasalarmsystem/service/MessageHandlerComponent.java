@@ -27,8 +27,6 @@ public class MessageHandlerComponent {
             SmokeData smokeData = objectMapper.readValue(message, SmokeData.class);
             if ((smokeData.getTemperature() > 70) || smokeData.getStatus().equals(SensorStatusEnum.CRITICAL)) {
                 mqttGateway.sendToMqttBroker(SMOKE_ALARM, TOPIC_ALARM);
-            } else {
-                mqttGateway.sendToMqttBroker(OK, TOPIC_ALARM);
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -41,8 +39,6 @@ public class MessageHandlerComponent {
             GasData gasData = objectMapper.readValue(message, GasData.class);
             if (gasData.getStatus().equals(SensorStatusEnum.CRITICAL)) {
                 mqttGateway.sendToMqttBroker(GAS_ALARM, TOPIC_ALARM);
-            } else {
-                mqttGateway.sendToMqttBroker(OK, TOPIC_ALARM);
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();

@@ -10,7 +10,6 @@ public class AppConstants {
 
     public static final String SMOKE_ALARM = "SMOKE ALARM!";
     public static final String GAS_ALARM = "GAS ALARM!";
-    public static final String OK = "OK";
     public static final String RESOLVE_STATUS_NO = "NOT RESOLVED";
     public static final String RESOLVE_STATUS_OK = "RESOLVED";
 }
